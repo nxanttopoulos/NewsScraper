@@ -1,13 +1,10 @@
-/* Showing Mongoose's "Populated" Method (18.3.8)
- * INSTRUCTOR ONLY
- * =============================================== */
 // Dependencies
 var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
-// Requiring our Note and Article models
-var Note = require("./models/Note.js");
+// Requiring our Comments and News Articles models
+var Comment = require("./models/Comment.js");
 var Article = require("./models/Article.js");
 // Our scraping tools
 var request = require("request");
@@ -35,8 +32,7 @@ db.once("open", function() {
   console.log("Mongoose connection successful.");
 });
 // Routes
-// ======
-// A GET request to scrape the echojs website
+// A GET request to scrape the news website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with request
   request("http://www.echojs.com/", function(error, response, html) {
@@ -85,11 +81,7 @@ app.get("/articles", function(req, res) {
 // Grab an article by it's ObjectId
 app.get("/articles/:id", function(req, res) {
   // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-  Article.findOne({ "_id": req.params.id })
-  // ..and populate all of the notes associated with it
-  .populate("note")
-  // now, execute our query
-  .exec(function(error, doc) {
+  Article.findOne({ "_id": req.params.id }).populate("comment").exec(function(error, doc) {
     // Log any errors
     if (error) {
       console.log(error);
@@ -103,17 +95,17 @@ app.get("/articles/:id", function(req, res) {
 // Create a new note or replace an existing note
 app.post("/articles/:id", function(req, res) {
   // Create a new note and pass the req.body to the entry
-  var newNote = new Note(req.body);
+  var newComment = new Comment(req.body);
   // And save the new note the db
-  newNote.save(function(error, doc) {
+  newComment.save(function(error, doc) {
     // Log any errors
     if (error) {
       console.log(error);
     }
     // Otherwise
     else {
-      // Use the article id to find and update it's note
-      Article.findOneAndUpdate({ "_id": req.params.id }, { "note": doc._id })
+      // Use the article id to find and update it's comment
+      Article.findOneAndUpdate({ "_id": req.params.id }, { "comment": doc._id })
       // Execute the above query
       .exec(function(err, doc) {
         // Log any errors
