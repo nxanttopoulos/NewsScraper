@@ -3,47 +3,50 @@
   <head>
     <meta charset="UTF-8">
     <title>News Article Scraper</title>
-    <style>
-      body { background-color: #F2F6D0 }
-      #wrapper {
-        width: 960px;
-        margin-left: auto;
-        margin-right: auto;
-        padding-top: 5%;
-      }
-      #articles {
-        display: inline-block;
-        overflow: auto;
-        width: 60%;
-        height: 700px;
-      }
-      #comments {
-        float: right;
-        width: 30%;
-      }
-      textarea, input {
-        display: block;
-        width: 100%;
-        background-color: #FCF5C7;
-      }
-      input {
-        height: 36px;
-        font-size: 24px;
-      }
-      textarea {
-        height: 200px;
-        font-size: 18px;
-      }
-    </style>
   </head>
   <body>
-    <div id="wrapper">
-      <h1>News Article Scraper</h1>
-      <h2><i>Finding the news article you seek, made easy with scraping!</i></h2>
-      <div id="articles"></div>
-      <div id="comments"></div>
+  <header id="masthead">
+    <div class="container">
+      <nav>
+        Mongo Scraper
+        <button class="btn" id="home"><a href="/"><span>Home</span></a></button>
+        <button class="btn"><a href="/articles"><span>Saved Articles</span></a></button>
+        <button id="scrape" class="btn btn-danger" data-toggle="modal" data-target="#ex1"><span>SCRAPE NEW ARTICLES!</span></button>
+      </nav>
     </div>
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="app.js"></script>
-  </body>
+  </header>
+  <div id="ex1" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  <h3 class="modal-title">Scrape Completed!</h3>
+              </div>
+              <div class="modal-body">
+                  <h4 class ="nameModal" id="modalContent"></h4>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-default" id="closed" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <br>
+  <div id="wrapper">
+    <h1>News Article Scraper</h1>
+    <h2><i>Finding the news article you seek, made easy with scraping!</i></h2>
+    <br><br>
+    <div id="articles"></div>
+    <div id="comments"></div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="assets/css/reset.css">
+  <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery.js"></script>
+  <script src="https://use.fontawesome.com/96a9ff5940.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>

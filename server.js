@@ -1,4 +1,5 @@
 // Dependencies
+var articles = [];
 var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
@@ -21,7 +22,7 @@ app.use(bodyParser.urlencoded({
 // Make public a static dir
 app.use(express.static("public"));
 // Database configuration with mongoose
-mongoose.connect("mongodb://heroku_3x2gzdv1:vip6589956c9p3qdo1a214nmg4@ds121622.mlab.com:21622/heroku_3x2gzdv1");
+mongoose.connect("mongodb://localhost/newsScraperApp");
 var db = mongoose.connection;
 // Show any mongoose errors
 db.on("error", function(error) {
@@ -35,18 +36,21 @@ db.once("open", function() {
 // A GET request to scrape the news website
 app.get("/scrape", function(req, res) {
   // First, we grab the body of the html with request
-  request("http://www.echojs.com/", function(error, response, html) {
+  request("https://www.reddit.com/r/news", function(error, response, html) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(html);
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function(i, element) {
+    $("p.title").each(function(i, element) {
       // Save an empty result object
       var result = {};
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this).children("a").text();
-      result.link = $(this).children("a").attr("href");
+      result.title = $(this).text();
+      result.link = $(element).children("a").attr("href");
       // Using our Article model, create a new entry
       // This effectively passes the result object to the entry (and the title and link)
+      if (articles.indexOf(result) < -1) {
+        articles.push(result);
+      }
       var entry = new Article(result);
       // Now, save that entry to the db
       entry.save(function(err, doc) {
@@ -61,8 +65,7 @@ app.get("/scrape", function(req, res) {
       });
     });
   });
-  // Tell the browser that we finished scraping the text
-  res.send("Scrape Complete");
+  res.json(articles);
 });
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {
@@ -96,6 +99,34 @@ app.get("/articles/:id", function(req, res) {
 app.post("/articles/:id", function(req, res) {
   // Create a new note and pass the req.body to the entry
   var newComment = new Comment(req.body);
+  // And save the new note the db
+  newComment.save(function(error, doc) {
+    // Log any errors
+    if (error) {
+      console.log(error);
+    }
+    // Otherwise
+    else {
+      // Use the article id to find and update it's comment
+      Article.findOneAndUpdate({ "_id": req.params.id }, { "comment": doc._id })
+      // Execute the above query
+      .exec(function(err, doc) {
+        // Log any errors
+        if (err) {
+          console.log(err);
+        }
+        else {
+          // Or send the document to the browser
+          res.send(doc);
+        }
+      });
+    }
+  });
+});
+// To delete the comment, here we update the comment with empty string.
+app.post("/articles/:id", function(req, res) {
+  // Create a new note and pass the req.body to the entry
+  var newComment = new Comment({title:'', body:''});
   // And save the new note the db
   newComment.save(function(error, doc) {
     // Log any errors

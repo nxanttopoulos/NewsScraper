@@ -1,11 +1,18 @@
 // Grab the articles as a json
-$.getJSON("/articles", function(data) {
-  for (var i = 0; i < data.length; i++) {
-    $("#articles").append("<p data-id='" + data[i]._id + "'>" + data[i].title + "<br />" + data[i].link + "</p>");
-  }
+$(document).on('click','#scrape', function() {
+  $("#articles").empty();
+  $.getJSON("/articles", function(data) {
+    document.getElementById("modalContent").innerHTML = "There were "+data.length+" new articles added!";
+    for (var i = 0; i < data.length; i++) {
+      $("#articles").append("<p>" + data[i].title + "<br><a href='" + data[i].link + "'>" + data[i].link + "</a></p><button data-id='" + data[i]._id + "'id='createComment'>Comment</button><br><br>");
+    }
+  });
+});
+$(document).on('click','#home', function() {
+    $("#articles").empty();
 });
 // Whenever someone clicks a p tag
-$(document).on("click", "p", function() {
+$(document).on("click", "#createComment", function() {
   // Empty the comments from the comment section
   $("#comments").empty();
   // Save the id from the p tag
@@ -21,11 +28,12 @@ $(document).on("click", "p", function() {
       // The title of the article
       $("#comments").append("<h2>" + data.title + "</h2>");
       // An input to enter a new title
-      $("#comments").append("<input id='titleinput' name='title' >");
+      $("#comments").append("<input id='titleinput' placeholder='Title' name='title' >");
       // A textarea to add a new comment body
-      $("#comments").append("<textarea id='bodyinput' name='body'></textarea>");
+      $("#comments").append("<textarea id='bodyinput' placeholder='Comment' name='body'></textarea>");
       // A button to submit a new comment, with the id of the article saved to it
       $("#comments").append("<button data-id='" + data._id + "' id='saveComment'>Save Comment</button>");
+      $("#comments").append("<button class='btn-danger' data-id='" + data._id + "' id='deleteComment'>Delete Comment</button>");
       // If there's a comment in the article
       if (data.comment) {
         // Place the title of the comment in the title input
@@ -48,6 +56,30 @@ $(document).on("click", "#saveComment", function() {
       title: $("#titleinput").val(),
       // Value taken from comment textarea
       body: $("#bodyinput").val()
+    }
+  })
+    // With that done
+    .done(function(data) {
+      // Log the response
+      console.log(data);
+      // Empty the comments section
+      $("#comments").empty();
+    });
+  // Also, remove the values entered in the input and textarea for comment entry
+  $("#titleinput").val("");
+  $("#bodyinput").val("");
+});
+// When you click the deletecomment button
+$(document).on("click", "#deleteComment", function() {
+  // Grab the id associated with the article from the submit button
+  var thisId = $(this).attr("data-id");
+  // Run a UPDATE request to change the comment, using what's entered in the inputs
+  $.ajax({
+    method: "POST",
+    url: "/articles/" + thisId,
+    data: {
+      title: '',
+      body: ''
     }
   })
     // With that done

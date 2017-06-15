@@ -1,0 +1,63 @@
+body { 
+  background-color: #F2F6D0 
+}
+#wrapper {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 5%;
+}
+#articles {
+  display: inline-block;
+  overflow: auto;
+  width: 60%;
+  height: 700px;
+}
+#comments {
+  float: right;
+  width: 30%;
+}
+textarea, input {
+  display: block;
+  width: 100%;
+  background-color: white;
+}
+input {
+  height: 36px;
+  font-size: 24px;
+}
+textarea {
+  height: 200px;
+  font-size: 18px;
+}
+h1, h2 {
+  text-align:center;
+  position: relative;
+}
+.submit {
+  color:black;
+}
+#masthead {
+  position: fixed;
+  z-index: 99;
+  margin: 0 0 30px;
+  overflow: auto;
+  width: 100%;
+  color: #fff;
+  background: #fff;
+  border-bottom: 2px solid #ccc;
+  height:75px;
+  font-size:20px;
+}
+nav {
+  float: left;
+  color:black;
+  margin-top: 25px;
+  font-size:20px;
+}
+nav a {
+  display: inline-block;
+  color: black;
+  font-size:20px;
+  text-decoration: none;
+}
