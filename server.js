@@ -4,6 +4,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var logger = require("morgan");
 var mongoose = require("mongoose");
+var path = require("path");
 // Requiring our Comments and News Articles models
 var Comment = require("./models/Comment.js");
 var Article = require("./models/Article.js");
@@ -34,7 +35,7 @@ db.once("open", function() {
 });
 // Routes
 // A GET request to scrape the news website
-app.get("/scrape", function(req, res) {
+app.get("/", function(req, res) {
   // First, we grab the body of the html with request
   request("https://www.reddit.com/r/news", function(error, response, html) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
@@ -65,7 +66,7 @@ app.get("/scrape", function(req, res) {
       });
     });
   });
-  res.redirect("/");
+  res.sendFile(path.join(__dirname, "public", "scraper.html"));
 });
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {
