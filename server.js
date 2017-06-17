@@ -22,7 +22,7 @@ app.use(bodyParser.urlencoded({
 // Make public a static dir
 app.use(express.static("public"));
 // Database configuration with mongoose
-mongoose.connect("mongodb://localhost/newsScraperApp");
+mongoose.connect("mongodb://heroku_3x2gzdv1:vip6589956c9p3qdo1a214nmg4@ds121622.mlab.com:21622/heroku_3x2gzdv1");
 var db = mongoose.connection;
 // Show any mongoose errors
 db.on("error", function(error) {
@@ -65,7 +65,7 @@ app.get("/scrape", function(req, res) {
       });
     });
   });
-  res.json(articles);
+  res.redirect("/");
 });
 // This will get the articles we scraped from the mongoDB
 app.get("/articles", function(req, res) {

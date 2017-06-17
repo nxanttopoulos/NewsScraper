@@ -2,7 +2,7 @@
 $(document).on('click','#scrape', function() {
   $("#articles").empty();
   $.getJSON("/articles", function(data) {
-    document.getElementById("modalContent").innerHTML = "There were "+data.length+" new articles added!";
+    document.getElementById("modalContent").innerHTML = "There were "+data.length+" articles added!";
     for (var i = 0; i < data.length; i++) {
       $("#articles").append("<p>" + data[i].title + "<br><a href='" + data[i].link + "'>" + data[i].link + "</a></p><button data-id='" + data[i]._id + "'id='createComment'>Comment</button><br><br>");
     }
